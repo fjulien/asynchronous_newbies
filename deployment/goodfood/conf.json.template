@@ -1,0 +1,17 @@
+    {
+      "name": "fr.openent~goodfood~1.0.0",
+      "config": {
+        "main" : "fr.openent.goodfood.goodfood",
+        "port" : 808",
+        "app-name" : "GoodFood",
+    	"app-address" : "/goodfood",
+        "host": "${host}",
+        "ssl" : $ssl,
+        "auto-redeploy": false,
+        "integration-mode" : "HTTP",
+        "app-registry.port" : 8012,
+        "mode" : "${mode}",
+		"sql": true,
+        "entcore.port" : 8009
+      }
+    }

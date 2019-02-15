@@ -1,0 +1,11 @@
+{
+	"main" : "fr.openent.goodfood.GoodFood",
+	"port" : 8025,
+	"app-name" : "goodfood",
+	"app-address" : "/goodfood",
+	"app-icon" : "goodfood-large",
+	"app-displayName" : "Good Food",
+	"mode": "dev",
+	"entcore.port" : 8090,
+	"auto-redeploy": false
+}
