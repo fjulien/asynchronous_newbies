@@ -96,7 +96,7 @@ public class CookingController extends BaseController {
                 Handler<Either<String, JsonObject>> makeBurgerHandler = finalburger -> {
                     if (finalburger.isRight()) {
                         // call 3
-                        cookingService.makeDrink(entries.getString("burger_choice"), order_number, makeDrinkHandler);
+                        cookingService.makeDrink(entries.getString("drink_choice"), order_number, makeDrinkHandler);
                     } else {
                         badRequest(request, "Burger problem");
                     }
@@ -112,7 +112,7 @@ public class CookingController extends BaseController {
                 };
 
                 // call 1 - enter point
-                cookingService.makeFrenchFries(entries.getString("burger_choice"), order_number, makeFrenchFriesHandler);
+                cookingService.makeFrenchFries(entries.getString("friesSausage_choice"), order_number, makeFrenchFriesHandler);
 
             } else {
                 badRequest(request, "No valid params");
@@ -132,20 +132,20 @@ public class CookingController extends BaseController {
                 Future<JsonObject> makeDrinkFuture = Future.future();
                 Handler<Either<String, JsonObject>> makeDrinkHandler = finalDrink -> {
                     if (finalDrink.isRight()) {
-                        makeDrinkFuture.complete();
+                        makeDrinkFuture.complete(finalDrink.right().getValue());
                     } else {
                         makeDrinkFuture.fail( "Drinking problem");
                     }
                 };
 
                 //call 3
-                cookingService.makeDrink(entries.getString("burger_choice"), order_number, makeDrinkHandler);
+                cookingService.makeDrink(entries.getString("drink_choice"), order_number, makeDrinkHandler);
 
                 // Future / Handler 2
                 Future<JsonObject> makeBurgerFuture = Future.future();
                 Handler<Either<String, JsonObject>> makeBurgerHandler = finalburger -> {
                     if (finalburger.isRight()) {
-                        makeBurgerFuture.complete();
+                        makeBurgerFuture.complete(finalburger.right().getValue());
                     } else {
                         makeBurgerFuture.fail("Burger problem");
                     }
@@ -158,18 +158,21 @@ public class CookingController extends BaseController {
                 Future<JsonObject> makeFrenchFriesFuture = Future.future();
                 Handler<Either<String, JsonObject>> makeFrenchFriesHandler = finalFries -> {
                     if (finalFries.isRight()) {
-                        makeFrenchFriesFuture.complete();
+                        makeFrenchFriesFuture.complete(finalFries.right().getValue());
                     } else {
                         makeFrenchFriesFuture.fail("Fries problem");
                     }
                 };
 
                 // call 1 - enter point
-                cookingService.makeFrenchFries(entries.getString("burger_choice"), order_number, makeFrenchFriesHandler);
+                cookingService.makeFrenchFries(entries.getString("friesSausage_choice"), order_number, makeFrenchFriesHandler);
 
                 // Final Response
                 CompositeFuture.all(makeBurgerFuture, makeFrenchFriesFuture, makeDrinkFuture).setHandler( event -> {
                     if (event.succeeded()) {
+                        JsonObject burger = makeBurgerFuture.result(); //return object from service
+                        JsonObject fries = makeFrenchFriesFuture.result(); //return object from service
+                        JsonObject drink = makeDrinkFuture.result(); //return object from service
                         request.response()
                                 .putHeader("Content-type", "text/html;charset=utf-8")
                                 .setChunked(true)
